@@ -7,7 +7,7 @@
             Console.WriteLine("Hello, World!");
             DrawField(31, 30, 10);
             DrawX(31, 30, 10);
-            DrawO(31, 30, 10);
+            DrawO(31, 30, 10);            
         }
         static void DrawField(int w, int h, int cellSize)
         {
@@ -28,7 +28,6 @@
                 }
             }
         }
-
         static void DrawX(int x, int y, int size)
         {
             for (int i = x; i <= x + size; i++)
@@ -56,6 +55,21 @@
                     }
                 }
             }
+        }
+
+        static void Check()
+        {
+            char[,] arr = { 
+                { '1',' ' },
+                { '2',' ' },
+                { '3',' ' },
+                { '4',' ' },
+                { '5',' ' },
+                { '6',' ' },
+                { '7',' ' },
+                { '8',' ' },
+                { '9',' ' }
+            }; 
         }
     }
 }
