@@ -98,6 +98,13 @@ namespace TicTacToe_console
                     Console.WriteLine($"Игрок {playerNum} победил и получает свободу!");
                     return;
                 }
+                else if (CheckWin(arr) == -1) 
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Ничья!");
+                    return;
+                }
+
                 
                 // Смена игрока
                 playerNum = (sbyte)(playerNum == 1 ? 2 : 1);
@@ -153,11 +160,11 @@ namespace TicTacToe_console
             }
             #endregion
             #region Checking For Draw
-            // If all the cells or values filled with X or O then any player has won the match
-            //else if (arr[1] != '1' && arr[2] != '2' && arr[3] != '3' && arr[4] != '4' && arr[5] != '5' && arr[6] != '6' && arr[7] != '7' && arr[8] != '8' && arr[9] != '9')
-            //{
-            //    return -1;
-            //}
+            //If all the cells or values filled with X or O then any player has won the match
+            else if (arr[0] != '1' && arr[1] != '2' && arr[2] != '3' && arr[3] != '4' && arr[4] != '5' && arr[5] != '6' && arr[6] != '7' && arr[7] != '8' && arr[8] != '9')
+            {
+                return -1;
+            }
             #endregion
             else
             {
