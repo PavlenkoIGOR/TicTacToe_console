@@ -1,16 +1,23 @@
-﻿namespace TicTacToe_console
+﻿using System.Threading.Tasks;
+namespace TicTacToe_console
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static DrawingOClass _drawingOClass = new DrawingOClass();
+        static DrawingXClass _drawingXClass = new DrawingXClass();
+        static DrawingField _drawingField = new DrawingField();
+        internal static void Main()
         {
-            // Установить размер окна консоли
-            Console.SetWindowSize(70, 38);
-
-            // Установить размер буфера консоли (если нужно)
-            //Console.SetBufferSize(60, 60);
+            Console.SetWindowSize(74, 38);
             sbyte result = default;
             char[] arr = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if (arr[i] != 'o' || arr[i] != 'x')
+                {
+
+                } 
+            }
             Dictionary<sbyte, sbyte[]> coordinates = new Dictionary<sbyte, sbyte[]>()
             {
                 { 1, [2,2] },       { 2, [14, 2] },     { 3, [26, 2] },
@@ -22,86 +29,93 @@
                 sbyte[] coord = coordinates[key];
                 //DrawX(coord[0], coord[1], 8);
             }
-
-
-            for (int i = 0; i < coordinates.Count; i++) 
+            sbyte playerNum = default;
+            Random random = new Random();
+            playerNum = (sbyte)random.Next(1, 3);
+            var t = Task.Run(async() => 
             {
-                DrawField(36, 36, 12);
+                Console.Write("Идёт определения очерёдности ходов...");
+                
+                await Task.Delay(1500);
+                Console.SetCursorPosition(0, 0);
+                Console.Clear();
+                Console.Write($"Первым ходит игрок {playerNum}");
+                await Task.Delay(1500);
+                Console.SetCursorPosition(0, 0);
+            }); 
+            t.Wait();
+            _drawingField.DrawField(36, 36, 12);
+            _drawingField.FillFieldByNumbers(coordinates, arr);
+            for (int i = 0; i < 9; i++)
+            {
                 Console.SetCursorPosition(40, 1);
-                Console.Write("enter number of cell: ");
-                bool parsed = sbyte.TryParse(Console.ReadLine(), out result);
-                if (parsed)
+                Console.WriteLine($"Ходит игрок {playerNum} - {(playerNum == 1 ? 'X' : 'O')}");
+
+                bool validInput = false;
+                do
                 {
-                    sbyte[] aaarr = coordinates[result];
-                    DrawX(aaarr[0], aaarr[1], 8);
+
+                    Console.SetCursorPosition(40, 2);
+                    Console.Write($"Игрок {playerNum} введите номер клетки:     ");
+                    Console.SetCursorPosition(40, 2);
+                    Console.Write($"Игрок {playerNum} введите номер клетки: ");
+
+                    bool parsed = sbyte.TryParse(Console.ReadLine(), out result);
+                    Console.SetCursorPosition(40, 3);
+                    Console.Write(new string(' ', "Эта клетка уже занята. Попробуйте другую.".Length));
+                    if (parsed && result >= 1 && result <= 9)
+                    {
+                        if (arr[result - 1] != 'X' && arr[result - 1] != 'O') // Проверка на занятость клетки
+                        {
+                            sbyte[] aaarr = coordinates[result];
+                            if (playerNum == 1)
+                            {
+                                _drawingXClass.DrawX(aaarr[0], aaarr[1], 8);
+                                arr[result - 1] = 'X'; // Сохранение состояния клетки
+                            }
+                            else
+                            {
+                                _drawingOClass.DrawO(aaarr[0], aaarr[1], 8);
+                                arr[result - 1] = 'O'; // Сохранение состояния клетки
+                            }
+                            validInput = true; // Успешный ввод
+                        }
+                        else
+                        {
+                            Console.SetCursorPosition(40, 3);
+                            Console.WriteLine("Эта клетка уже занята. Попробуйте другую.");
+                        }
+                    }
+                    else
+                    {
+                        Console.SetCursorPosition(40, 3);
+                        Console.WriteLine("Некорректный ввод. Нужно число от 1 до 9.");
+                    }
+                } while (!validInput);
+                if (CheckWin(arr) == 1)
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Игрок {playerNum} победил и получает свободу!");
+                    return;
                 }
-                Console.SetCursorPosition(64, 1);
+                
+                // Смена игрока
+                playerNum = (sbyte)(playerNum == 1 ? 2 : 1);
             }
-
-
-
-            
-            //
             Console.ReadLine();
-        }
-        static void DrawField(int w, int h, int cellSize)
-        {
-            for (int y = 0; y <= h; y += cellSize)
-            {
-                for (int x = 0; x < w; x++)
-                {
-                    Console.SetCursorPosition(x, y);
-                    Console.WriteLine("██");
-                }
-            }
-            for (int x = 0; x <= w; x += cellSize)
-            {
-                for (int y = 0; y <= h; y++)
-                {
-                    Console.SetCursorPosition(x, y);
-                    Console.WriteLine("█");
-                }
-            }
-        }
-        static void DrawX(int x, int y, int size)
-        {
-            for (int i = x; i <= x + size; i++)
-            {
-                for (int j = y; j <= y + size; j++)
-                {
-                    if (i - j == x - y || i + j == y + x + size)
-                    {
-                        Console.SetCursorPosition(i, j);
-                        Console.WriteLine("█");
-                    }
-                }
-            }
-        }
-        static void DrawO(int x, int y, int size)
-        {
-            for (int i = x; i <= x + size; i++)
-            {
-                for (int j = y; j <= y + size; j++)
-                {
-                    if (i == x || i == x + size || j == y || j == y + size)
-                    {
-                        Console.SetCursorPosition(i, j);
-                        Console.WriteLine("█");
-                    }
-                }
-            }
-        }
+        } 
+        
 
-        static int CheckWin(int[] arr)
+        static sbyte CheckWin(char[] arr)
         {
             #region Horzontal Winning Condtion
             //Winning Condition For First Row
-            if (arr[1] == arr[2] && arr[2] == arr[3])
+            if (arr[0] == arr[1] && arr[1] == arr[2])
             {
                 return 1;
             }
             //Winning Condition For Second Row
-            else if (arr[4] == arr[5] && arr[5] == arr[6])
+            else if (arr[3] == arr[4] && arr[4] == arr[5])
             {
                 return 1;
             }
@@ -113,37 +127,37 @@
             #endregion
             #region vertical Winning Condtion
             //Winning Condition For First Column
-            else if (arr[1] == arr[4] && arr[4] == arr[7])
+            else if (arr[0] == arr[3] && arr[3] == arr[6])
             {
                 return 1;
             }
             //Winning Condition For Second Column
-            else if (arr[2] == arr[5] && arr[5] == arr[8])
+            else if (arr[1] == arr[4] && arr[4] == arr[7])
             {
                 return 1;
             }
             //Winning Condition For Third Column
-            else if (arr[3] == arr[6] && arr[6] == arr[9])
+            else if (arr[2] == arr[5] && arr[5] == arr[8])
             {
                 return 1;
             }
             #endregion
             #region Diagonal Winning Condition
-            else if (arr[1] == arr[5] && arr[5] == arr[9])
+            else if (arr[0] == arr[4] && arr[4] == arr[8])
             {
                 return 1;
             }
-            else if (arr[3] == arr[5] && arr[5] == arr[7])
+            else if (arr[2] == arr[4] && arr[4] == arr[6])
             {
                 return 1;
             }
             #endregion
             #region Checking For Draw
             // If all the cells or values filled with X or O then any player has won the match
-            else if (arr[1] != '1' && arr[2] != '2' && arr[3] != '3' && arr[4] != '4' && arr[5] != '5' && arr[6] != '6' && arr[7] != '7' && arr[8] != '8' && arr[9] != '9')
-            {
-                return -1;
-            }
+            //else if (arr[1] != '1' && arr[2] != '2' && arr[3] != '3' && arr[4] != '4' && arr[5] != '5' && arr[6] != '6' && arr[7] != '7' && arr[8] != '8' && arr[9] != '9')
+            //{
+            //    return -1;
+            //}
             #endregion
             else
             {
