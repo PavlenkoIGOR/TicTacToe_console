@@ -121,7 +121,7 @@ namespace TicTacToe_console
             {
                 return 1;
             }
-            //Winning Condition For Second Row
+            
             else if (arr[3] == arr[4] && arr[4] == arr[5])
             {
                 return 1;
