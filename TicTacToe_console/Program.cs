@@ -115,7 +115,7 @@ namespace TicTacToe_console
 
         static sbyte CheckWin(char[] arr)
         {
-            #region Horzontal Winning Condtion
+           
             
             if (arr[0] == arr[1] && arr[1] == arr[2])
             {
@@ -126,7 +126,7 @@ namespace TicTacToe_console
             {
                 return 1;
             }
-            //Winning Condition For Third Row
+            
             else if (arr[6] == arr[7] && arr[7] == arr[8])
             {
                 return 1;
